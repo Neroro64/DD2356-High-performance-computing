@@ -5,7 +5,7 @@
 #define N 1000000
 
 #define THREADS 12
-#define PAD 3
+#define PAD 8
 
 void serial(double x[]);
 void parallel(double x[]);
@@ -19,9 +19,9 @@ int main(){
         x[i] = ((double)(rand()) / RAND_MAX)*((double)(rand()) / RAND_MAX)*((double)(rand()) / RAND_MAX)*1000;
     }
 
-    // serial(x);
+    serial(x);
     // parallel1(x);
-    parallel2(x);
+    // parallel2(x);
     return 0;
 }
 
@@ -58,10 +58,9 @@ void serial(double x[]){
 }
 
 void parallel1(double x[]){
-    double t = mysecond();
     double max = 0.0;
     int maxloc = 0;
-    // omp_set_num_threads(THREADS);
+    double t = omp_get_wtime();
     #pragma omp parallel for num_threads(THREADS) schedule(auto)
     for (int i = 0; i < N; i++){
         if (x[i] > max){
@@ -75,7 +74,7 @@ void parallel1(double x[]){
                 
         }
     } 
-    double t2 = mysecond();
+    double t2 = omp_get_wtime();
 
     output(max, maxloc, t2-t);
 }
